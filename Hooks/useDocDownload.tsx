@@ -1,24 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { saveAs } from 'file-saver';
 
-const useDocDownload = ({ docType = 'term-result', TEMPLATE_URL = '/docs/term-result.docx' }) => {
-    const [documentData, setDocumentData] = useState({});
-    const [loading, setLoading] = useState(false);
+type useDocDownloadProp = {
+    TEMPLATE_URL: string
+    documentData: {}
+    fileTitle: string
+}
 
-    useEffect(() => {
-        if (docType === 'term-result') {
-            setDocumentData({
-                first_name: 'Mudasir Bashir',
-                fathers_name: 'Bashir Ahmad',
-                current_class: '8th',
-                academic_year: '2029-2030',
-                section: 'A',
-                time: new Date().toLocaleString(),  // Current time in local format
-            });
-        }
-    }, [docType]);
+const useDocDownload = ({ TEMPLATE_URL = '/docs/term-result.docx', documentData = {}, fileTitle = '' }: useDocDownloadProp) => {
+    const [loading, setLoading] = useState(false);
 
     const fetchTemplate = async () => {
         const response = await fetch(TEMPLATE_URL);
@@ -42,7 +34,7 @@ const useDocDownload = ({ docType = 'term-result', TEMPLATE_URL = '/docs/term-re
         }
 
         const docContent = doc.getZip().generate({ type: 'blob' });
-        saveAs(docContent, `mudasir_Details.docx`);
+        saveAs(docContent, `${fileTitle}.docx`);
     };
 
     const downloadDocx = async () => {
